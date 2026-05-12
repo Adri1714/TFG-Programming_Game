@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 // Llegeix el fitxer de nivell i separa codi font de logica executable.
 public class LevelParser : MonoBehaviour
@@ -19,7 +20,7 @@ public class LevelParser : MonoBehaviour
         if (levelFile == null) return;
 
         sourceCodeLines.Clear();
-        string[] lines = levelFile.text.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.None);
+        string[] lines = levelFile.text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
         foreach (string line in lines)
         {

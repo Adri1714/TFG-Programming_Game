@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
         carriedCube = cube;
         // Ancorat al punt de ma i sense fisica mentre es transporta.
         carriedCube.transform.SetParent(carryPoint);
-        carriedCube.transform.localPosition = new Vector3(0, 1.5f, 0); 
+        carriedCube.transform.localPosition = new Vector3(-0.25f, 0.79f, 0.70f); 
         if (carriedCube.TryGetComponent(out Rigidbody cubeRb)) cubeRb.isKinematic = true;
     }
 

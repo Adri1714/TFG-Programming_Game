@@ -1,0 +1,29 @@
+<1>int <2>n<1> = 10;<2>
+// Comprovem si es major d'edat
+<3>if (n < 18)<3> {
+<4> printf("MIN");<4>
+<5>} else {<5>
+<6> printf("MAX");<6>
+<7>}<7>
+<8>// Fi del programa<8>
+LOGIC
+<1>
+DIM_ID:0:n
+DIM_CODE:1:10
+DIM_CODE:2:18
+DIM_CODE:3:"MIN"
+DIM_CODE:4:"MAX"
+DIM_MEM:n
+<2>
+WRITE_MEM:n:10
+<3>
+PRESS_JMP:(n < 18):6
+<4>
+WRITE_IO:"MIN"
+<5>
+JMP:8
+<6>
+WRITE_IO:"MAX"
+<7>
+JMP:8
+<8>

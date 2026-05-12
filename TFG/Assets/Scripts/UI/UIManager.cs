@@ -41,6 +41,7 @@ public class UIManager : MonoBehaviour
         foreach (string line in lines) {
             TMP_Text t = Instantiate(textPrefab, codePanel).GetComponent<TMP_Text>();
             t.text = line;
+            //t.fontStyle = FontStyles.Bold;
             uiLines.Add(t);
         }
     }
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
     // Ressalta la linia de fragment que s'esta executant.
     private void HighlightLine(int index) {
         for (int i = 0; i < uiLines.Count; i++)
-            uiLines[i].color = (i == index) ? Color.yellow : Color.white;
+            uiLines[i].color = (i == index) ? Color.red : Color.black;
     }
 
     private void UpdateTaskPrompt(string msg) => taskText.text = msg;
