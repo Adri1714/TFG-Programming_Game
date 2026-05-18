@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface Hazard
+public interface IHazardEffect
 {
     void TriggerHazard(PlayerController player);
 }

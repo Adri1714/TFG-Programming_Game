@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // Gestiona moviment, seleccio d'objectiu i interaccions del jugador.
@@ -11,6 +12,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private Vector2 input;
+    private readonly Dictionary<string, float> moveSpeedModifiers = new Dictionary<string, float>();
+    private readonly HashSet<string> reversedInputSources = new HashSet<string>();
 
     // Objecte interactuable mes proxim dins el radi.
     private GameObject currentTarget;
@@ -34,13 +37,62 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         // Converteix input 2D a moviment isometric en el pla XZ.
-        Vector3 moveDir = new Vector3(input.x + input.y, 0f, input.y - input.x).normalized;
+        Vector2 adjustedInput = ApplyControlModifiers(input);
+        Vector3 moveDir = new Vector3(adjustedInput.x + adjustedInput.y, 0f, adjustedInput.y - adjustedInput.x).normalized;
         if (moveDir.sqrMagnitude > 0.01f) 
         {
-            rb.MovePosition(rb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + moveDir * GetEffectiveMoveSpeed() * Time.fixedDeltaTime);
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRot, rotationSpeed * Time.fixedDeltaTime));
         }
+    }
+
+    public void SetMoveSpeedMultiplier(string sourceId, float multiplier)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) return;
+
+        moveSpeedModifiers[sourceId] = Mathf.Max(0f, multiplier);
+    }
+
+    public void ClearMoveSpeedMultiplier(string sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) return;
+
+        moveSpeedModifiers.Remove(sourceId);
+    }
+
+    public void SetControlsReversed(string sourceId, bool reversed)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) return;
+
+        if (reversed)
+            reversedInputSources.Add(sourceId);
+        else
+            reversedInputSources.Remove(sourceId);
+    }
+
+    public void ClearControlsReversal(string sourceId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) return;
+
+        reversedInputSources.Remove(sourceId);
+    }
+
+    private Vector2 ApplyControlModifiers(Vector2 rawInput)
+    {
+        return reversedInputSources.Count > 0 ? -rawInput : rawInput;
+    }
+
+    private float GetEffectiveMoveSpeed()
+    {
+        float speedMultiplier = 1f;
+
+        foreach (float modifier in moveSpeedModifiers.Values)
+        {
+            speedMultiplier *= modifier;
+        }
+
+        return moveSpeed * speedMultiplier;
     }
 
     private void UpdateTargetHighlight()

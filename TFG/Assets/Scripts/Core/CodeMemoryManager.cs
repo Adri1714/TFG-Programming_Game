@@ -3,7 +3,6 @@ using UnityEngine;
 // Gestiona la carrega i neteja dels slots de memoria de codi (ROM).
 public class CodeMemoryManager : MonoBehaviour 
 {
-    [Header("Configuració")]
     public CodeMemorySlot[] codeSlots;
 
     private void Awake()

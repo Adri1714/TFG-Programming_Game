@@ -1,34 +1,9 @@
 fileFormatVersion: 2
-guid: c164b2da71560094e8e6f02657242ba9
+guid: 8673b0c3205eb974a8bfb7051ed346c6
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Clothe
-    second: {fileID: 2100000, guid: 44811ea4ec691c8409128cf8acc074b2, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Eye-Center
-    second: {fileID: 2100000, guid: 3daf550513a0ec94c82166cb27e25ede, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Hat
-    second: {fileID: 2100000, guid: 5375e511d7879e5428aac15bf2ba7b66, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Nose
-    second: {fileID: 2100000, guid: f8f7ef23d0faf644692b48b8f0a70f7e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Skin
-    second: {fileID: 2100000, guid: c9b212f8c2f87634986ecce530cc603b, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
