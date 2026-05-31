@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7423442852394643238}
   - component: {fileID: 8074073789822027717}
   - component: {fileID: 2991925577407226492}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,8 +114,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 3211794583200272810}
   - component: {fileID: -2070110493756507211}
   - component: {fileID: -5958353826289155035}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: cubePrefab
   m_TagString: Cube
   m_Icon: {fileID: 0}
@@ -286,7 +286,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -334,7 +334,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &-5958353826289155035
 MonoBehaviour:

@@ -1,45 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Gestiona moviment, seleccio d'objectiu i interaccions del jugador.
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
     public Transform carryPoint;
-    public float interactionRadius = 1.5f; 
+    public float interactionRadius = 1.5f;
     public GameObject carriedCube;
+    [SerializeField] private LayerMask interactableLayer = ~0;
 
     private Rigidbody rb;
     private Vector2 input;
     private readonly Dictionary<string, float> moveSpeedModifiers = new Dictionary<string, float>();
     private readonly HashSet<string> reversedInputSources = new HashSet<string>();
 
-    // Objecte interactuable mes proxim dins el radi.
     private GameObject currentTarget;
 
     void Start() => rb = GetComponent<Rigidbody>();
 
     void Update()
     {
+        if (Time.timeScale == 0f) { input = Vector2.zero; return; }
+
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         UpdateTargetHighlight();
 
-        if (Input.GetKeyDown(KeyCode.E) && currentTarget != null) 
-        {
+        if (Input.GetKeyDown(KeyCode.E) && currentTarget != null)
             InteractWithTarget();
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && carriedCube != null) DropCube();
     }
 
     void FixedUpdate()
     {
-        // Converteix input 2D a moviment isometric en el pla XZ.
+        // Converteix l'input 2D a moviment isometric en el pla XZ.
         Vector2 adjustedInput = ApplyControlModifiers(input);
         Vector3 moveDir = new Vector3(adjustedInput.x + adjustedInput.y, 0f, adjustedInput.y - adjustedInput.x).normalized;
-        if (moveDir.sqrMagnitude > 0.01f) 
+        if (moveDir.sqrMagnitude > 0.01f)
         {
             rb.MovePosition(rb.position + moveDir * GetEffectiveMoveSpeed() * Time.fixedDeltaTime);
             Quaternion targetRot = Quaternion.LookRotation(moveDir);
@@ -50,14 +49,12 @@ public class PlayerController : MonoBehaviour
     public void SetMoveSpeedMultiplier(string sourceId, float multiplier)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) return;
-
         moveSpeedModifiers[sourceId] = Mathf.Max(0f, multiplier);
     }
 
     public void ClearMoveSpeedMultiplier(string sourceId)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) return;
-
         moveSpeedModifiers.Remove(sourceId);
     }
 
@@ -74,7 +71,6 @@ public class PlayerController : MonoBehaviour
     public void ClearControlsReversal(string sourceId)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) return;
-
         reversedInputSources.Remove(sourceId);
     }
 
@@ -86,29 +82,22 @@ public class PlayerController : MonoBehaviour
     private float GetEffectiveMoveSpeed()
     {
         float speedMultiplier = 1f;
-
         foreach (float modifier in moveSpeedModifiers.Values)
-        {
             speedMultiplier *= modifier;
-        }
-
         return moveSpeed * speedMultiplier;
     }
 
+    // Selecciona l'objecte interactuable mes proxim dins el radi i el ressalta.
     private void UpdateTargetHighlight()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, interactionRadius);
+        Collider[] hits = Physics.OverlapSphere(transform.position, interactionRadius, interactableLayer);
         GameObject closestObj = null;
         float minDist = float.MaxValue;
 
         foreach (var hit in hits)
         {
-            // Nomes es poden seleccionar cubs lliures o dispositius interactuables.
-            bool isValidTarget = (carriedCube == null && hit.CompareTag("Cube")) || 
-                                 hit.GetComponent<MemorySlot>() || 
-                                 hit.GetComponent<Output>() || 
-                                 hit.GetComponent<ALUController>() || 
-                                 hit.GetComponent<BranchingButton>();
+            bool isValidTarget = (carriedCube == null && hit.CompareTag("Cube")) ||
+                                 hit.GetComponentInParent<IInteractable>() != null;
 
             if (isValidTarget)
             {
@@ -119,32 +108,31 @@ public class PlayerController : MonoBehaviour
 
         if (closestObj != currentTarget)
         {
-            if (currentTarget != null && currentTarget.TryGetComponent(out InteractableHighlight oldHl)) 
+            if (currentTarget != null && currentTarget.TryGetComponent(out InteractableHighlight oldHl))
                 oldHl.SetHighlight(false);
-                
+
             currentTarget = closestObj;
-            
-            if (currentTarget != null && currentTarget.TryGetComponent(out InteractableHighlight newHl)) 
+
+            if (currentTarget != null && currentTarget.TryGetComponent(out InteractableHighlight newHl))
                 newHl.SetHighlight(true);
         }
     }
 
     private void InteractWithTarget()
     {
-        // Prioritza el tipus d'interaccio segons el component detectat.
+        if (currentTarget == null) return;
+
         if (carriedCube == null && currentTarget.CompareTag("Cube")) { PickUpCube(currentTarget); return; }
-        if (currentTarget.TryGetComponent(out MemorySlot memSlot)) { memSlot.HandleInteraction(this); return; }
-        if (currentTarget.TryGetComponent(out Output outUnit)) { outUnit.HandleInteraction(this); return; }
-        if (currentTarget.TryGetComponent(out ALUController alu)) { alu.HandleInteraction(this); return; }
-        if (currentTarget.TryGetComponent(out BranchingButton btn)) { btn.PressButton(); return; }
+
+        IInteractable interactable = currentTarget.GetComponentInParent<IInteractable>();
+        if (interactable != null) interactable.HandleInteraction(this);
     }
 
     private void PickUpCube(GameObject cube)
     {
         carriedCube = cube;
-        // Ancorat al punt de ma i sense fisica mentre es transporta.
         carriedCube.transform.SetParent(carryPoint);
-        carriedCube.transform.localPosition = new Vector3(-0.25f, 0.79f, 0.70f); 
+        carriedCube.transform.localPosition = new Vector3(-0.25f, 0.79f, 0.70f);
         if (carriedCube.TryGetComponent(out Rigidbody cubeRb)) cubeRb.isKinematic = true;
     }
 

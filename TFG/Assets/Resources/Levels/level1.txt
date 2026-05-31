@@ -1,0 +1,5 @@
+<1>printf("Hello World");<1>
+LOGIC
+<1>
+DIM_CODE:0:"Hello World"
+WRITE_IO:"Hello World"

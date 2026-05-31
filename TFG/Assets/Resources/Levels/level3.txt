@@ -1,0 +1,26 @@
+<1>int <2>x<1> = 3;<2>
+<3>if (x < 5)<3> {
+<4>  printf(x + 1);<4>
+<5>} else {<5>
+<6>  printf(x + 2);<6>
+<7>}<7>
+LOGIC
+<1>
+DIM_ID:0:x
+DIM_CODE:1:3
+DIM_CODE:2:5
+DIM_CODE:3:1
+DIM_CODE:4:2
+DIM_MEM:x
+<2>
+WRITE_MEM:x:3
+<3>
+PRESS_JMP:(x < 5):6
+<4>
+WRITE_IO:(x + 1)
+JMP:7
+<5>
+JMP:7
+<6>
+WRITE_IO:(x + 2)
+<7>

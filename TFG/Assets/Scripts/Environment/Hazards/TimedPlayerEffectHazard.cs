@@ -12,24 +12,20 @@ public abstract class TimedPlayerEffectHazard : MonoBehaviour, IHazardEffect
     public void TriggerHazard(PlayerController player)
     {
         if (player == null) return;
-
         ActivateEffect(player);
     }
 
+    // Aplica l'efecte i programa la seva retirada despres d'effectDuration.
     protected void ActivateEffect(PlayerController player)
     {
         if (activePlayer != null && activePlayer != player)
-        {
             ClearActiveEffect();
-        }
 
         activePlayer = player;
         ApplyEffect(player);
 
         if (effectRoutine != null)
-        {
             StopCoroutine(effectRoutine);
-        }
 
         if (effectDuration <= 0f)
         {
@@ -47,9 +43,7 @@ public abstract class TimedPlayerEffectHazard : MonoBehaviour, IHazardEffect
     protected virtual void OnDisable()
     {
         if (clearEffectOnDisable)
-        {
             ClearActiveEffect();
-        }
     }
 
     private IEnumerator ClearEffectAfterDelay(PlayerController player)
@@ -57,14 +51,10 @@ public abstract class TimedPlayerEffectHazard : MonoBehaviour, IHazardEffect
         yield return new WaitForSeconds(effectDuration);
 
         if (player != null)
-        {
             RemoveEffect(player);
-        }
 
         if (activePlayer == player)
-        {
             activePlayer = null;
-        }
 
         effectRoutine = null;
     }

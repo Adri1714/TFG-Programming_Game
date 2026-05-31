@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-// Llegeix el fitxer de nivell i separa codi font de logica executable.
 public class LevelParser : MonoBehaviour
 {
     private enum ParseState { ReadCode, ReadLogic }
@@ -10,11 +9,9 @@ public class LevelParser : MonoBehaviour
     private List<string> sourceCodeLines = new List<string>();
     private string currentFragmentID = "";
 
-    // Exposa les linies per a la UI del codi.
     public List<string> GetSourceCodeLines() => sourceCodeLines;
 
-
-    // Parseja el fitxer complet i inicialitza l'execucio en acabar.
+    // Parseja el fitxer i inicialitza l'execucio en acabar.
     public void ParseLevel(TextAsset levelFile, GameManager manager)
     {
         if (levelFile == null) return;
@@ -30,14 +27,14 @@ public class LevelParser : MonoBehaviour
             if (currentState == ParseState.ReadCode) ProcessCodeLine(line, sourceCodeLines.Count, manager);
             else ProcessLogicLine(trimmed, manager);
         }
-        
+
         manager.InitializeExecution();
     }
 
-    // Extreu IDs <n> de la part de codi i conserva el text visible net.
+    // Extreu els IDs <n> del codi i conserva el text visible net.
     private void ProcessCodeLine(string line, int lineIndex, GameManager manager)
     {
-        string textLine = "";
+        var textLine = new System.Text.StringBuilder();
         string readId = "";
         bool readingTag = false;
 
@@ -50,15 +47,15 @@ public class LevelParser : MonoBehaviour
             if (readingTag && line[i] == '>')
             {
                 readingTag = false;
-                if (!manager.fragments.ContainsKey(readId))
-                    manager.fragments.Add(readId, new Fragment(readId, lineIndex));
+                if (!manager.HasFragment(readId))
+                    manager.RegisterFragment(readId, new Fragment(readId, lineIndex));
                 readId = ""; continue;
             }
 
             if (readingTag) readId += line[i];
-            else textLine += line[i];
+            else textLine.Append(line[i]);
         }
-        sourceCodeLines.Add(textLine);
+        sourceCodeLines.Add(textLine.ToString());
     }
 
     // Associa cada comanda de LOGIC amb el fragment actual.
@@ -67,7 +64,7 @@ public class LevelParser : MonoBehaviour
         if (string.IsNullOrWhiteSpace(line)) return;
         if (line.StartsWith("<") && line.EndsWith(">"))
             currentFragmentID = line.Substring(1, line.Length - 2);
-        else if (manager.fragments.ContainsKey(currentFragmentID))
-            manager.fragments[currentFragmentID].AddCommand(line);
+        else if (manager.HasFragment(currentFragmentID))
+            manager.AddCommandToFragment(currentFragmentID, line);
     }
 }

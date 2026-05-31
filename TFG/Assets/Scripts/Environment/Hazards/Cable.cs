@@ -13,48 +13,38 @@ public class Cable : TimedPlayerEffectHazard
     private GameObject activeSparkInstance;
     private const string ModifierSource = nameof(Cable);
 
+    void Start()
+    {
+        if (cameraShake == null) cameraShake = Camera.main.GetComponent<CameraShake>();
+    }
+
     protected override void ApplyEffect(PlayerController player)
     {
         if (player == null) return;
 
-        if (dropCubeOnTrigger)
-        {
-            player.DropCube();
-        }
+        if (dropCubeOnTrigger) player.DropCube();
         cameraShake.Shake(cameraShakeDuration, cameraShakeMagnitude);
         player.SetMoveSpeedMultiplier(ModifierSource, slowMultiplier);
-
     }
 
     protected override void RemoveEffect(PlayerController player)
     {
         if (player == null) return;
-
         player.ClearMoveSpeedMultiplier(ModifierSource);
     }
 
+    // Crea o destrueix l'efecte visual d'espurnes segons l'estat.
     public void SetHazardActive(bool active)
     {
         if (active)
         {
             if (activeSparkInstance == null && sparkEffect != null && sparkEffectSpawnPoint != null)
-            {
-                activeSparkInstance = Instantiate(
-                    sparkEffect,
-                    sparkEffectSpawnPoint.position,
-                    sparkEffectSpawnPoint.rotation,
-                    sparkEffectSpawnPoint
-                );
-            }
+                activeSparkInstance = Instantiate(sparkEffect, sparkEffectSpawnPoint.position, sparkEffectSpawnPoint.rotation, sparkEffectSpawnPoint);
         }
-        else
+        else if (activeSparkInstance != null)
         {
-            if (activeSparkInstance != null)
-            {
-                Destroy(activeSparkInstance);
-                activeSparkInstance = null;
-            }
+            Destroy(activeSparkInstance);
+            activeSparkInstance = null;
         }
     }
-
 }

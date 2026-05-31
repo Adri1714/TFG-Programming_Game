@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5689399050073987526}
   - component: {fileID: 7192773698726472217}
   - component: {fileID: 446752490954953455}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Eye2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 9068359439228401676}
   - component: {fileID: 4192733121893439029}
   - component: {fileID: 5138931839971140409}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Eye1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,6 +235,10 @@ PrefabInstance:
       value: PLAYER
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c164b2da71560094e8e6f02657242ba9, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c164b2da71560094e8e6f02657242ba9, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -309,7 +313,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
@@ -330,6 +334,9 @@ MonoBehaviour:
   carryPoint: {fileID: 8052088596016131969}
   interactionRadius: 1.5
   carriedCube: {fileID: 0}
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!4 &8052088596016131969 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c164b2da71560094e8e6f02657242ba9, type: 3}

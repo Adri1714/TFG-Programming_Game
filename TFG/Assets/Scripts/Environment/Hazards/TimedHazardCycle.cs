@@ -20,20 +20,12 @@ public class TimedHazardCycle : MonoBehaviour
     private void Awake()
     {
         hazards.Clear();
-
         foreach (MonoBehaviour behaviour in GetComponents<MonoBehaviour>())
-        {
             if (behaviour is IHazardEffect hazardEffect)
-            {
                 hazards.Add(hazardEffect);
-            }
-        }
     }
 
-    private void OnEnable()
-    {
-        cycleRoutine = StartCoroutine(HazardCycle());
-    }
+    private void OnEnable() => cycleRoutine = StartCoroutine(HazardCycle());
 
     private void OnDisable()
     {
@@ -52,38 +44,29 @@ public class TimedHazardCycle : MonoBehaviour
         if (other.TryGetComponent(out PlayerController player))
         {
             currentPlayer = player;
-
             if (isActive && triggerWhenPlayerEntersDuringActive)
-            {
                 TriggerHazards(currentPlayer);
-            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!other.TryGetComponent(out PlayerController player)) return;
-        if (player == currentPlayer)
-        {
-            currentPlayer = null;
-        }
+        if (player == currentPlayer) currentPlayer = null;
     }
+
     private void SetCycleVisuals(bool active)
     {
         foreach (MonoBehaviour behaviour in GetComponents<MonoBehaviour>())
-        {
             if (behaviour is Cable cable)
-            {
                 cable.SetHazardActive(active);
-            }
-        }
     }
+
+    // Bucle d'activacio/desactivacio periodica del hazard.
     private IEnumerator HazardCycle()
     {
         if (cycleDuration > 0f)
-        {
             yield return new WaitForSeconds(Random.Range(0f, cycleDuration));
-        }
 
         while (true)
         {
@@ -93,9 +76,7 @@ public class TimedHazardCycle : MonoBehaviour
             float activeTime = 0f;
 
             if (triggerOnActiveStart && currentPlayer != null)
-            {
                 TriggerHazards(currentPlayer);
-            }
 
             WaitForSeconds activeWait = new WaitForSeconds(activeInterval);
 
@@ -105,29 +86,22 @@ public class TimedHazardCycle : MonoBehaviour
                 activeTime += activeInterval;
 
                 if (activeTime < activeDuration && currentPlayer != null)
-                {
                     TriggerHazards(currentPlayer);
-                }
             }
 
             SetCycleVisuals(false);
             isActive = false;
 
             float inactiveDuration = GetInactiveDuration();
-
             if (inactiveDuration > 0f)
-            {
                 yield return new WaitForSeconds(inactiveDuration);
-            }
         }
     }
 
     private float GetInactiveDuration()
     {
         if (!randomizeInactiveDuration)
-        {
             return Mathf.Max(0f, cycleDuration - activeDuration);
-        }
 
         float minDuration = Mathf.Max(0f, inactiveDurationRange.x);
         float maxDuration = Mathf.Max(minDuration, inactiveDurationRange.y);
@@ -136,14 +110,8 @@ public class TimedHazardCycle : MonoBehaviour
 
     private void TriggerHazards(PlayerController player)
     {
-        if (player == null || hazards.Count == 0)
-        {
-            return;
-        }
-
+        if (player == null || hazards.Count == 0) return;
         for (int i = 0; i < hazards.Count; i++)
-        {
             hazards[i].TriggerHazard(player);
-        }
     }
 }
