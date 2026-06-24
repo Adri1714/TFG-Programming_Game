@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56925eabecf751b4db469e0f87700557, type: 3}
+  m_Name: SoundLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
+  menuMusic: {fileID: 8300000, guid: cc5c8cd90adb89b4dae83fad24f5ae68, type: 3}
+  gameMusic: {fileID: 8300000, guid: 157b951d813be024698ef266582eff8f, type: 3}
+  pickup: {fileID: 8300000, guid: ac2d77fd36c1f0543894f0c13ae9a6b0, type: 3}
+  drop: {fileID: 8300000, guid: 933f2ebdd4c1e664a98598a2647da17a, type: 3}
+  aluOperate: {fileID: 8300000, guid: 81edef1750891d44488dddb8a8ba7c4a, type: 3}
+  print: {fileID: 8300000, guid: e9b4a77f98d7c9246a531106adb720f0, type: 3}
+  trash: {fileID: 8300000, guid: e7671d5da6a7d0b49a521f2e4c3bcbdc, type: 3}
+  declareVar: {fileID: 8300000, guid: 7a00b054f7f04304485daab9b3ba6715, type: 3}
+  assignVar: {fileID: 8300000, guid: 7a00b054f7f04304485daab9b3ba6715, type: 3}
+  footstep: {fileID: 8300000, guid: 59817551e56b7d64aa1c34b302a6b8e1, type: 3}
+  levelComplete: {fileID: 8300000, guid: 841cba4bfb25dbf4789c68384b4f6e4d, type: 3}
+  error: {fileID: 8300000, guid: 853a155cd68441147b2c1151011b96e6, type: 3}
+  shock: {fileID: 8300000, guid: 9025827906354d74f998f12b28be6f98, type: 3}
+  panic: {fileID: 8300000, guid: c6789e2103ac45541af81c9616a6b542, type: 3}
+  dizzy: {fileID: 0}
+  buttonClick: {fileID: 8300000, guid: 4fb5cc165bfa9f541b99ba71762feec2, type: 3}
+  buttonHover: {fileID: 8300000, guid: cdc5877d1cc93ac4cbcb47449843c662, type: 3}

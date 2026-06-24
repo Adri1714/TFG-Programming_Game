@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-// Fa aparexier un hazard en punts de spawn del nivell cada cert temps.
 public class HazardSpawner : MonoBehaviour
 {
     [Header("Hazard")]
@@ -46,7 +45,15 @@ public class HazardSpawner : MonoBehaviour
             return;
         }
 
-        spawnRoutine = StartCoroutine(SpawnLoop());
+        
+        if(!updatePosition)
+        {
+            Spawn();
+        }
+        else
+        {
+            spawnRoutine = StartCoroutine(SpawnLoop());
+        }
     }
 
     private void OnDisable()
@@ -58,6 +65,13 @@ public class HazardSpawner : MonoBehaviour
         }
 
         DestroyActiveInstance();
+    }
+    private void Spawn()
+    {
+        foreach (Transform point in spawnPoints)
+        {
+            Instantiate(hazardPrefab, point.position, point.rotation);
+        }
     }
 
     private IEnumerator SpawnLoop()
@@ -88,7 +102,6 @@ public class HazardSpawner : MonoBehaviour
         activeInstance = Instantiate(hazardPrefab, point.position, point.rotation);
     }
 
-    // Tria el seguent punt segons configuracio (aleatori o seqüencial).
     private Transform GetNextSpawnPoint()
     {
         if (spawnPoints.Length == 1) return spawnPoints[0];

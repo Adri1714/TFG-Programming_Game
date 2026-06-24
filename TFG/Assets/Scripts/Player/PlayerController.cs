@@ -12,12 +12,23 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private Vector2 input;
+    public bool IsMoving => input.sqrMagnitude > 0.01f;
     private readonly Dictionary<string, float> moveSpeedModifiers = new Dictionary<string, float>();
     private readonly HashSet<string> reversedInputSources = new HashSet<string>();
+    public bool playerControlsReversed = false;
 
     private GameObject currentTarget;
+    private CameraDizzy cameraDizzy;
+    private InputEvents inputEvents;
 
-    void Start() => rb = GetComponent<Rigidbody>();
+    void Awake() => cameraDizzy = GetComponent<CameraDizzy>();
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        inputEvents = InputEvents.Instance;
+        inputEvents.OnInteract += InteractWithTarget;
+        inputEvents.OnDrop += DropCube;
+    }
 
     void Update()
     {
@@ -26,16 +37,13 @@ public class PlayerController : MonoBehaviour
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         UpdateTargetHighlight();
-
-        if (Input.GetKeyDown(KeyCode.E) && currentTarget != null)
-            InteractWithTarget();
-
-        if (Input.GetKeyDown(KeyCode.Space) && carriedCube != null) DropCube();
     }
 
     void FixedUpdate()
     {
-        // Converteix l'input 2D a moviment isometric en el pla XZ.
+        rb.linearVelocity = Vector3.zero;  
+        rb.angularVelocity = Vector3.zero;
+
         Vector2 adjustedInput = ApplyControlModifiers(input);
         Vector3 moveDir = new Vector3(adjustedInput.x + adjustedInput.y, 0f, adjustedInput.y - adjustedInput.x).normalized;
         if (moveDir.sqrMagnitude > 0.01f)
@@ -63,9 +71,15 @@ public class PlayerController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(sourceId)) return;
 
         if (reversed)
+        {
             reversedInputSources.Add(sourceId);
+            playerControlsReversed = true;
+        }
         else
+        {
             reversedInputSources.Remove(sourceId);
+            playerControlsReversed = false;
+        }
     }
 
     public void ClearControlsReversal(string sourceId)
@@ -87,7 +101,6 @@ public class PlayerController : MonoBehaviour
         return moveSpeed * speedMultiplier;
     }
 
-    // Selecciona l'objecte interactuable mes proxim dins el radi i el ressalta.
     private void UpdateTargetHighlight()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, interactionRadius, interactableLayer);
@@ -130,6 +143,7 @@ public class PlayerController : MonoBehaviour
 
     private void PickUpCube(GameObject cube)
     {
+        AudioManager.Play(l => l.pickup);
         carriedCube = cube;
         carriedCube.transform.SetParent(carryPoint);
         carriedCube.transform.localPosition = new Vector3(-0.25f, 0.79f, 0.70f);
@@ -139,6 +153,7 @@ public class PlayerController : MonoBehaviour
     public void DropCube()
     {
         if (carriedCube == null) return;
+        AudioManager.Play(l => l.drop);
         carriedCube.transform.SetParent(null);
         if (carriedCube.TryGetComponent(out Rigidbody cubeRb)) cubeRb.isKinematic = false;
         carriedCube = null;
@@ -148,5 +163,10 @@ public class PlayerController : MonoBehaviour
     {
         Destroy(carriedCube);
         carriedCube = null;
+    }
+    private void OnDisable()
+    {
+        inputEvents.OnInteract -= InteractWithTarget;
+        inputEvents.OnDrop -= DropCube;
     }
 }

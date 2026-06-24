@@ -6,7 +6,6 @@ public class BranchingButton : MonoBehaviour, IInteractable
 
     public void HandleInteraction(PlayerController player) => PressButton();
 
-    // Notifica al GameManager quina branca ha triat el jugador.
     public void PressButton()
     {
         GameManager.Instance.ValidateAction(GameManager.TaskState.PRESS_JMP, "JUMP", isTrueButton ? "TRUE" : "FALSE");

@@ -14,7 +14,6 @@ public class CodeMemorySlot : MemorySlot, IInteractable
         RefreshLabel();
     }
 
-    // Amb les mans buides, extreu una copia de la dada del slot.
     public override void HandleInteraction(PlayerController player)
     {
         if (player.carriedCube == null && value != "???")
@@ -23,7 +22,7 @@ public class CodeMemorySlot : MemorySlot, IInteractable
 
     private void SpawnCodeCube()
     {
-        GameObject newCube = Instantiate(cubePrefab, spawnPoint.position, Quaternion.identity);
+        GameObject newCube = Instantiate(cubePrefab, spawnPoint.position + new Vector3(0, -1f, 0), Quaternion.identity);
         newCube.GetComponent<DataPacket>().SetData(value, isIdentifierData);
     }
 }

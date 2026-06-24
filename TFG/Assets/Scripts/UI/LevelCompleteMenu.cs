@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -17,6 +18,9 @@ public class LevelCompleteMenu : MonoBehaviour
     [Header("Escenes")]
     [SerializeField] private string gameplaySceneName = "Version3";
     [SerializeField] private string menuSceneName = "Menu";
+
+    [Tooltip("Segons d'espera abans de mostrar el panell, perquè es vegi l'últim print.")]
+    [SerializeField] private float endDelay = 1.5f;
 
     private bool shown;
 
@@ -41,15 +45,21 @@ public class LevelCompleteMenu : MonoBehaviour
 
         if (gameTimer != null) gameTimer.StopTimer();
 
-        if (titleText != null) titleText.text = "NIVELL COMPLETAT!";
+        StartCoroutine(ShowAfterDelay());
+    }
+
+    private IEnumerator ShowAfterDelay()
+    {
+        yield return new WaitForSeconds(endDelay);
+        Time.timeScale = 0f;
+        if (titleText != null) titleText.text = "LEVEL COMPLETED!";
         if (timeText != null)
-            timeText.text = "Temps: " + (gameTimer != null ? gameTimer.FormattedTime : "--:--");
+            timeText.text = "Time: " + (gameTimer != null ? gameTimer.FormattedTime : "--:--");
 
         if (nextLevelButton != null)
             nextLevelButton.SetActive(GameSession.HasNextLevel);
 
         if (completePanel != null) completePanel.SetActive(true);
-        Time.timeScale = 0f;
     }
 
     public void NextLevel()
@@ -71,4 +81,5 @@ public class LevelCompleteMenu : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(menuSceneName);
     }
+
 }

@@ -28,7 +28,6 @@ public class UIManager : MonoBehaviour
         gameManager.OnOutputGenerated -= UpdateConsole;
     }
 
-    // Reconstrueix les linies del panell de codi per al nivell carregat.
     private void SetupCodeUI(List<string> lines) {
         foreach (Transform child in codePanel) Destroy(child.gameObject);
         uiLines.Clear();
@@ -39,7 +38,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Ressalta la linia del fragment que s'esta executant.
     private void HighlightLine(int index) {
         for (int i = 0; i < uiLines.Count; i++)
             uiLines[i].color = (i == index) ? Color.red : Color.black;

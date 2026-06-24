@@ -4,21 +4,18 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
-    [SerializeField] private KeyCode toggleKey = KeyCode.Escape;
     [SerializeField] private string menuSceneName = "Menu";
 
     public bool IsPaused { get; private set; }
+    private InputEvents inputEvents;
 
     private void Start()
     {
         Time.timeScale = 1f;
         IsPaused = false;
         if (pausePanel != null) pausePanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(toggleKey)) Toggle();
+        inputEvents = InputEvents.Instance;
+        inputEvents.OnToggle += Toggle;
     }
 
     public void Toggle()

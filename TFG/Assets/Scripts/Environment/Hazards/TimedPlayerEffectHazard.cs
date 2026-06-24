@@ -15,7 +15,6 @@ public abstract class TimedPlayerEffectHazard : MonoBehaviour, IHazardEffect
         ActivateEffect(player);
     }
 
-    // Aplica l'efecte i programa la seva retirada despres d'effectDuration.
     protected void ActivateEffect(PlayerController player)
     {
         if (activePlayer != null && activePlayer != player)

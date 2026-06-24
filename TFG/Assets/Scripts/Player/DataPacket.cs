@@ -6,12 +6,13 @@ public class DataPacket : MonoBehaviour
     public string value;
     public bool isIdentifier;
     public TMP_Text displayText;
+    public bool fromAlu;
 
-    // Actualitza les dades logiques i la representacio visual del cub.
-    public void SetData(string val, bool id)
+    public void SetData(string val, bool id, bool computed = false)
     {
         value = val;
         isIdentifier = id;
+        fromAlu = computed;
         if (displayText != null) displayText.text = value;
     }
 }

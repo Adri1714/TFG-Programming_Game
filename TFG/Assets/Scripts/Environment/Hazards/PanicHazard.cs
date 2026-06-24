@@ -7,10 +7,7 @@ using TMPro;
 public class PanicHazard : MonoBehaviour
 {
     [Header("Timing")]
-    [Tooltip("Interval aleatori entre activacions de pànic.")]
-    [SerializeField] private Vector2 triggerIntervalRange = new Vector2(15f, 30f);
-
-    [Tooltip("Temps que té el jugador per prémer la tecla.")]
+    [Tooltip("Si actiu, el pànic s'activa sol periòdicament. Si no, només via TriggerPanic() (p. ex. rates).")]
     [SerializeField, Min(1f)] private float timeLimit = 5f;
 
     [Header("Tecles")]
@@ -41,7 +38,6 @@ public class PanicHazard : MonoBehaviour
 
     private bool isPanicking;
     private KeyCode currentKey;
-    private Coroutine panicRoutine;
     private Coroutine penaltyRoutine;
     private PlayerController player;
 
@@ -49,12 +45,14 @@ public class PanicHazard : MonoBehaviour
 
     private void Start()
     {
+        gameObject.SetActive(true);
         player = FindAnyObjectByType<PlayerController>();
+    }
 
-        if (player == null)
-            Debug.LogWarning("[PanicHazard] No s'ha trobat cap PlayerController a la escena.");
-
-        StartCoroutine(TriggerLoop());
+    public void TriggerPanic()
+    {
+        if (player != null && !isPanicking)
+            StartCoroutine(PanicSequence());
     }
 
     private void OnDisable()
@@ -68,14 +66,10 @@ public class PanicHazard : MonoBehaviour
         isPanicking = false;
     }
 
-    // Espera un interval aleatori i dispara una seqüencia de panic.
     private IEnumerator TriggerLoop()
     {
         while (true)
         {
-            float wait = Random.Range(triggerIntervalRange.x, triggerIntervalRange.y);
-            yield return new WaitForSeconds(wait);
-
             if (player != null && !isPanicking)
                 yield return StartCoroutine(PanicSequence());
         }
@@ -158,6 +152,7 @@ public class PanicHazard : MonoBehaviour
     private void OpenUI()
     {
         if (panicPanel != null) panicPanel.SetActive(true);
+        AudioManager.Play(l => l.panic);
         if (resultText != null) resultText.text = string.Empty;
         if (keyPromptText != null) keyPromptText.text = "PRESS " + currentKey.ToString().ToUpper();
         RefreshCountdown(timeLimit);
@@ -167,6 +162,7 @@ public class PanicHazard : MonoBehaviour
     private void CloseUI()
     {
         if (panicPanel != null) panicPanel.SetActive(false);
+        AudioManager.Stop(l => l.panic);
         SetOverlayAlpha(0f);
     }
 

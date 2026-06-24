@@ -21,7 +21,7 @@ public class Cable : TimedPlayerEffectHazard
     protected override void ApplyEffect(PlayerController player)
     {
         if (player == null) return;
-
+        AudioManager.Play(l => l.shock);
         if (dropCubeOnTrigger) player.DropCube();
         cameraShake.Shake(cameraShakeDuration, cameraShakeMagnitude);
         player.SetMoveSpeedMultiplier(ModifierSource, slowMultiplier);
@@ -33,7 +33,6 @@ public class Cable : TimedPlayerEffectHazard
         player.ClearMoveSpeedMultiplier(ModifierSource);
     }
 
-    // Crea o destrueix l'efecte visual d'espurnes segons l'estat.
     public void SetHazardActive(bool active)
     {
         if (active)

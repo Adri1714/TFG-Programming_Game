@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public LevelParser parser;
     public CodeMemoryManager codeMemory;
     public WorkMemoryManager workMemory;
+    private Calculator calculator;
 
     [Header("Estat del Simulador")]
     public IReadOnlyDictionary<string, Fragment> Fragments => _fragments;
@@ -23,14 +24,22 @@ public class GameManager : MonoBehaviour
 
     public enum TaskState { NONE, DIM_MEM, WRITE_MEM, WRITE_IO, PRESS_JMP }
     public TaskState currentTaskState = TaskState.NONE;
+    // True quan el valor de la tasca actual ve d'una operació (cal usar la ALU).
+    public bool CurrentTaskNeedsAlu { get; private set; }
     private string expectedValue;
     private string expectedDestination;
+    private int expOpA, expOpB;
+    private char expOpChar;
+    private bool taskHasOperation;
 
     public event Action<List<string>> OnCodeLoaded;
     public event Action<int> OnLineChanged;
     public event Action<string> OnTaskUpdated;
     public event Action<string> OnOutputGenerated;
     public event Action OnProgramFinished;
+    public event Action<TaskState> OnTaskStateChanged;
+    public event Action<TaskState> OnActionSucceeded;
+    public event Action OnActionFailed;
 
     private void Awake()
     {
@@ -41,6 +50,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         parser = GetComponent<LevelParser>();
+        calculator = new Calculator(GetVariableValue, workMemory.GetVariableValue);
 
         TextAsset selectedLevel = LoadSelectedLevel();
         if (selectedLevel != null) levelFile = selectedLevel;
@@ -57,7 +67,7 @@ public class GameManager : MonoBehaviour
         TextAsset asset = Resources.Load<TextAsset>(path);
 
         if (asset == null)
-            Debug.LogWarning($"[GameManager] No s'ha trobat '{path}' a Resources. S'usa el levelFile de l'Inspector.");
+            Debug.LogWarning($"[GameManager] '{path}' not found in Resources. Using levelFile from the Inspector.");
 
         return asset;
     }
@@ -72,6 +82,33 @@ public class GameManager : MonoBehaviour
         OnCodeLoaded?.Invoke(new List<string>(parser.GetSourceCodeLines()));
         SetFragment(0);
     }
+    private void SetExpectedOperation(string expr)
+    {
+        taskHasOperation = false;
+        string clean = expr.Replace("(", "").Replace(")", "").Replace('×','*').Replace('÷','/').Trim();
+        foreach (char op in new[] { '+', '-', '*', '/' })
+        {
+            int idx = clean.IndexOf(op);
+            if (idx <= 0) continue;
+            if (int.TryParse(calculator.Evaluate(clean.Substring(0, idx)), out expOpA) &&
+                int.TryParse(calculator.Evaluate(clean.Substring(idx + 1)), out expOpB))
+            {
+                expOpChar = op;
+                taskHasOperation = true;
+            }
+            return;
+        }
+    }
+    public bool MatchesExpectedOperation(int a, int b, string op)
+    {
+        if (!taskHasOperation) return true;
+        char o = op.Length > 0 ? op[0] : ' ';
+        if (o != expOpChar) return false;
+
+        if (o == '+' || o == '*')
+            return (a == expOpA && b == expOpB) || (a == expOpB && b == expOpA);
+        return a == expOpA && b == expOpB;
+    }
 
     public bool HasFragment(string id) => _fragments.ContainsKey(id);
     public void RegisterFragment(string id, Fragment f) => _fragments.TryAdd(id, f);
@@ -82,6 +119,7 @@ public class GameManager : MonoBehaviour
     {
         if (index >= sortedFragments.Count) {
             OnTaskUpdated?.Invoke("PROGRAMA FINALITZAT!");
+            OnTaskStateChanged?.Invoke(TaskState.NONE);
             OnProgramFinished?.Invoke();
             return;
         }
@@ -105,6 +143,7 @@ public class GameManager : MonoBehaviour
 
         string command = currentFrag.NextCommand();
         string[] parts = command.Split(':');
+        CurrentTaskNeedsAlu = false;
 
         switch (parts[0])
         {
@@ -117,18 +156,22 @@ public class GameManager : MonoBehaviour
                 ExecuteNext();
                 break;
             case "DIM_MEM":
-                SetTask(TaskState.DIM_MEM, "RAM_SLOT", parts[1], $"Declara la variable: {parts[1]}");
+                SetTask(TaskState.DIM_MEM, "RAM_SLOT", parts[1], $"Declare variable: {parts[1]}");
                 break;
             case "WRITE_MEM":
-                string valMem = Evaluate(parts[2]);
-                SetTask(TaskState.WRITE_MEM, parts[1], valMem, $"Assigna {valMem} a {parts[1]}");
+                string valMem = calculator.Evaluate(parts[2]);
+                CurrentTaskNeedsAlu = HasOperator(parts[2]);
+                SetExpectedOperation(parts[2]); 
+                SetTask(TaskState.WRITE_MEM, parts[1], valMem, $"Assign value {valMem} to {parts[1]}");
                 break;
             case "WRITE_IO":
-                string valIO = Evaluate(parts[1]);
-                SetTask(TaskState.WRITE_IO, "STDOUT", valIO, $"Imprimeix: {valIO}");
+                string valIO = calculator.Evaluate(parts[1]);
+                CurrentTaskNeedsAlu = HasOperator(parts[1]);
+                SetExpectedOperation(parts[1]);
+                SetTask(TaskState.WRITE_IO, "STDOUT", valIO, $"Print: {valIO}");
                 break;
             case "PRESS_JMP":
-                SetTask(TaskState.PRESS_JMP, "JUMP", parts[1], $"Avalua: {parts[1]}", parts[2]);
+                SetTask(TaskState.PRESS_JMP, "JUMP", parts[1], $"Evaluate: {parts[1]}", parts[2]);
                 break;
             case "JMP":
                 JumpToID(parts[1]);
@@ -146,7 +189,12 @@ public class GameManager : MonoBehaviour
         expectedValue = val;
         if (state == TaskState.PRESS_JMP) expectedDestination = extra;
         OnTaskUpdated?.Invoke(prompt);
+        OnTaskStateChanged?.Invoke(state);
     }
+
+    // L'expressió conté un operador? (llavors el valor s'ha de calcular a la ALU)
+    private static bool HasOperator(string expr) =>
+        expr.IndexOfAny(new[] { '+', '-', '*', '/', '×', '÷' }) >= 0;
 
     // Comprova si l'accio del jugador coincideix amb la tasca pendent i avanca.
     public bool ValidateAction(TaskState action, string destination, string value)
@@ -156,7 +204,7 @@ public class GameManager : MonoBehaviour
         bool success = false;
 
         if (action == TaskState.PRESS_JMP) {
-            string realResult = Evaluate(expectedValue).ToUpper();
+            string realResult = calculator.Evaluate(expectedValue).ToUpper();
             success = (value.ToUpper() == realResult);
             if (success && realResult == "FALSE") {
                 JumpToID(expectedDestination);
@@ -168,56 +216,27 @@ public class GameManager : MonoBehaviour
         }
 
         if (success) {
+            OnActionSucceeded?.Invoke(action);
             if (action == TaskState.WRITE_MEM) variables[expectedDestination] = expectedValue;
             if (action == TaskState.WRITE_IO) OnOutputGenerated?.Invoke(value);
             currentTaskState = TaskState.NONE;
+            OnTaskStateChanged?.Invoke(TaskState.NONE);
             ExecuteNext();
             return true;
         }
-
-        Debug.Log($"ERROR: S'esperava {expectedValue} a {expectedDestination}, però s'ha rebut {value} a {destination}");
-        return false;
+        else {
+            OnActionFailed?.Invoke();
+            return false;
+        }
     }
 
     private void JumpToID(string id) {
         int idx = sortedFragments.FindIndex(f => f.identifier == id);
         if (idx != -1) SetFragment(idx);
-    }
+    }    
 
-    // Avalua expressions simples: comparacio, suma, literals i variables.
-    public string Evaluate(string expr)
+    private string GetVariableValue(string name)
     {
-        string cleanExpr = expr.Replace("(", "").Replace(")", "").Replace("\"", "").Trim();
-        if (cleanExpr.Contains("<")) {
-            string[] p = cleanExpr.Split('<');
-            if (TryEvalInt(p[0], out int left) && TryEvalInt(p[1], out int right))
-                return (left < right) ? "TRUE" : "FALSE";
-            return "FALSE";
-        }
-        if (cleanExpr.Contains("+")) {
-            string[] p = cleanExpr.Split('+');
-            if (TryEvalInt(p[0], out int left) && TryEvalInt(p[1], out int right))
-                return (left + right).ToString();
-            return cleanExpr;
-        }
-        if (int.TryParse(cleanExpr, out _)) return cleanExpr;
-
-        if (variables.TryGetValue(cleanExpr, out string varValue)) return varValue;
-
-        string ramValue = workMemory.GetVariableValue(cleanExpr);
-        if (ramValue != null) return ramValue;
-
-        return cleanExpr;
-    }
-
-    // Converteix una sub-expressio a enter, avisant si no es numerica en lloc de petar.
-    private bool TryEvalInt(string expr, out int result)
-    {
-        string evaluated = Evaluate(expr);
-        if (int.TryParse(evaluated, out result)) return true;
-
-        Debug.LogError($"[GameManager] No s'ha pogut avaluar '{expr.Trim()}' com a numero (valor obtingut: '{evaluated}').");
-        result = 0;
-        return false;
+        return variables.TryGetValue(name, out string value) ? value : null;
     }
 }

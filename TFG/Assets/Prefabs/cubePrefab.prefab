@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8926846144800342979, guid: 7ba29404b663066458eaa3cb41386a26, type: 2}
+  - {fileID: -8287340853564803401, guid: 7ba29404b663066458eaa3cb41386a26, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_text: a
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7ba29404b663066458eaa3cb41386a26, type: 2}
-  m_sharedMaterial: {fileID: 8926846144800342979, guid: 7ba29404b663066458eaa3cb41386a26, type: 2}
+  m_sharedMaterial: {fileID: -8287340853564803401, guid: 7ba29404b663066458eaa3cb41386a26, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -350,3 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableHighlight
   targetRenderer: {fileID: 0}
   highlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  guideColor: {r: 0, g: 1, b: 1, a: 1}
+  pulseSpeed: 1.5
+  minEmission: 0.2
+  maxEmission: 1.8
