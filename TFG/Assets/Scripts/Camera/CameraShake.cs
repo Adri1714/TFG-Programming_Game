@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
-    [SerializeField] private float defaultDuration = 0.2f;
-    [SerializeField] private float defaultMagnitude = 0.15f;
-
     private Vector3 originalLocalPosition;
     private Coroutine shakeRoutine;
 

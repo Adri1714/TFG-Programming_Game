@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
     public void SetFragment(int index)
     {
         if (index >= sortedFragments.Count) {
-            OnTaskUpdated?.Invoke("PROGRAMA FINALITZAT!");
+            OnTaskUpdated?.Invoke("PROGRAM FINISHED!");
             OnTaskStateChanged?.Invoke(TaskState.NONE);
             OnProgramFinished?.Invoke();
             return;
@@ -142,6 +142,7 @@ public class GameManager : MonoBehaviour
         }
 
         string command = currentFrag.NextCommand();
+        if (command == null) { ExecuteNext(); return; }
         string[] parts = command.Split(':');
         CurrentTaskNeedsAlu = false;
 

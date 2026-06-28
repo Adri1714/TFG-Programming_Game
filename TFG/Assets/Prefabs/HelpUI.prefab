@@ -129,6 +129,7 @@ RectTransform:
   - {fileID: 1920852905329874232}
   - {fileID: 7527290477253173208}
   - {fileID: 8536761208427911182}
+  - {fileID: 706741423245293848}
   m_Father: {fileID: 202726832501960034}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -413,6 +414,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1920852905329874232}
   - component: {fileID: 1888326257047625887}
+  - component: {fileID: 8780787125884653559}
   m_Layer: 5
   m_Name: Toggle JUMP
   m_TagString: Untagged
@@ -501,6 +503,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &8780787125884653559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881357091510734213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &956161534651528730
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,6 +604,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3094623648199845235}
   - component: {fileID: 1160325574447598698}
+  - component: {fileID: 8894143698975272540}
   m_Layer: 5
   m_Name: Toggle RAM
   m_TagString: Untagged
@@ -678,6 +693,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &8894143698975272540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219367112067817806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &1260994770784038917
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,6 +876,81 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
+--- !u!1 &2130976572331807962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 706741423245293848}
+  - component: {fileID: 8102842570549341235}
+  - component: {fileID: 6880607212716011264}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &706741423245293848
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130976572331807962}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5697093575089459716}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 1.5999146, y: 0.625}
+  m_SizeDelta: {x: -234.80013, y: -135.11002}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8102842570549341235
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130976572331807962}
+  m_CullTransparentMesh: 1
+--- !u!114 &6880607212716011264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2130976572331807962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2588455569297222215
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,6 +1078,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7527290477253173208}
   - component: {fileID: 8846594427005291743}
+  - component: {fileID: 2590500997271159072}
   m_Layer: 5
   m_Name: Toggle Hazards
   m_TagString: Untagged
@@ -1064,6 +1167,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &2590500997271159072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2711943097216000607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &2897879727681942405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,6 +1418,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2863457531415994582}
   - component: {fileID: 8483833213561604461}
+  - component: {fileID: 1994746879752594187}
   m_Layer: 5
   m_Name: Toggle ALU
   m_TagString: Untagged
@@ -1391,6 +1507,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &1994746879752594187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3579008216602831802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &3664559743853299470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1478,6 +1606,7 @@ GameObject:
   - component: {fileID: 7412648606244533897}
   - component: {fileID: 626491166798885512}
   - component: {fileID: 401751931569879749}
+  - component: {fileID: 4687642313265815281}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1598,6 +1727,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4687642313265815281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4597492018983635811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &4967607246505634923
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,6 +1749,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7044576233837005996}
   - component: {fileID: 925272056298959693}
+  - component: {fileID: 3966335314729001298}
   m_Layer: 5
   m_Name: Toggle Objective
   m_TagString: Untagged
@@ -1696,6 +1838,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 1
+--- !u!114 &3966335314729001298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4967607246505634923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &5383528723494018957
 GameObject:
   m_ObjectHideFlags: 0
@@ -1714,7 +1868,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &202726832501960034
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1772,12 +1926,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2315,6 +2469,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7276518917013143376}
   - component: {fileID: 2310593295846168786}
+  - component: {fileID: 7560321654666016327}
   m_Layer: 5
   m_Name: Toggle ROM
   m_TagString: Untagged
@@ -2403,6 +2558,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &7560321654666016327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109051204905510916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &7427114458385529164
 GameObject:
   m_ObjectHideFlags: 0
@@ -3113,6 +3280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8536761208427911182}
   - component: {fileID: 2551458270609158399}
+  - component: {fileID: 3576101669904068209}
   m_Layer: 5
   m_Name: Toggle OutTrash
   m_TagString: Untagged
@@ -3201,6 +3369,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &3576101669904068209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9135472971386252337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4de85e3ad1d5446ae3446861f73643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiSfx
 --- !u!1 &9155389716349439530
 GameObject:
   m_ObjectHideFlags: 0

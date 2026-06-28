@@ -39,6 +39,9 @@ public class WorkMemorySlot : MemorySlot
                 RefreshLabel();
                 if (gm.CurrentTaskNeedsAlu && !packet.fromAlu)
                 {
+                    value = previousValue;
+                    displayName = previousDisplay;
+                    RefreshLabel();
                     AudioManager.Play(l => l.error);
                     return;
                 }

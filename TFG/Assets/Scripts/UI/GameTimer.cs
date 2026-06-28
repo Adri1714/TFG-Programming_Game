@@ -18,7 +18,11 @@ public class GameTimer : MonoBehaviour
         UpdateLabel();
 
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnProgramFinished += StopTimer;
+            GameManager.Instance.OnActionFailed += AddTime;
+            
+        }
     }
 
     private void OnDestroy()
@@ -35,6 +39,11 @@ public class GameTimer : MonoBehaviour
     }
 
     public void StopTimer() => running = false;
+    public void AddTime()
+    {
+        elapsed += 3f;
+        UpdateLabel();
+    }
 
     public void ResetTimer()
     {
