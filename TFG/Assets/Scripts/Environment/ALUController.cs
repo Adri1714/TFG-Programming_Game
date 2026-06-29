@@ -34,6 +34,7 @@ public class ALUController : MonoBehaviour, IInteractable
     private string leftVal = "", rightVal = "", selectedOp = "";
     private int opIndex;
     private float targetAngle;
+    private bool leftFromWorkMem, rightFromWorkMem;
 
     void Start()
     {
@@ -75,12 +76,14 @@ public class ALUController : MonoBehaviour, IInteractable
         if (string.IsNullOrEmpty(leftVal))
         {
             leftVal = packet.value;
+            leftFromWorkMem = packet.fromWorkMem;
             player.ConsumeCube();
             UpdateLabels();
         }
         else if (string.IsNullOrEmpty(rightVal))
         {
             rightVal = packet.value;
+            rightFromWorkMem = packet.fromWorkMem;
             player.ConsumeCube();
             UpdateLabels();
             state = AluState.ReadyToOpen;
@@ -124,7 +127,6 @@ public class ALUController : MonoBehaviour, IInteractable
 
         if (selectedOp == "/" && b == 0)
         {
-            Debug.LogWarning("ALU: divisió per zero.");
             return;
         }
 
@@ -137,7 +139,7 @@ public class ALUController : MonoBehaviour, IInteractable
             _ => 0
         };
         GameManager gm = GameManager.Instance;
-        if (gm != null && !gm.MatchesExpectedOperation(a, b, selectedOp))
+        if (gm != null && !gm.MatchesExpectedOperation(a, b, selectedOp, leftFromWorkMem, rightFromWorkMem))
         {
             AudioManager.Play(l => l.error);
             state = AluState.ShowingResult;
@@ -167,6 +169,7 @@ public class ALUController : MonoBehaviour, IInteractable
         leftVal = ""; rightVal = ""; selectedOp = "";
         opIndex = 0;
         targetAngle = startAngle;
+        leftFromWorkMem = false; rightFromWorkMem = false;
         state = AluState.Idle;
         if (iluminatedCalculatorPanel != null) iluminatedCalculatorPanel.SetActive(false);
         if (calculatorPanel != null) calculatorPanel.SetActive(true);

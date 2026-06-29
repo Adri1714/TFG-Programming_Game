@@ -26,9 +26,11 @@ public class GameManager : MonoBehaviour
     public TaskState currentTaskState = TaskState.NONE;
     // True quan el valor de la tasca actual ve d'una operació (cal usar la ALU).
     public bool CurrentTaskNeedsAlu { get; private set; }
+    public bool CurrentTaskNeedsWorkMem { get; private set; }
     private string expectedValue;
     private string expectedDestination;
     private int expOpA, expOpB;
+    private bool expAisVar, expBisVar;
     private char expOpChar;
     private bool taskHasOperation;
 
@@ -90,24 +92,31 @@ public class GameManager : MonoBehaviour
         {
             int idx = clean.IndexOf(op);
             if (idx <= 0) continue;
-            if (int.TryParse(calculator.Evaluate(clean.Substring(0, idx)), out expOpA) &&
-                int.TryParse(calculator.Evaluate(clean.Substring(idx + 1)), out expOpB))
+            string leftRaw  = clean.Substring(0, idx).Trim();
+            string rightRaw = clean.Substring(idx + 1).Trim();
+            if (int.TryParse(calculator.Evaluate(leftRaw), out expOpA) &&
+                int.TryParse(calculator.Evaluate(rightRaw), out expOpB))
             {
                 expOpChar = op;
+                expAisVar  = IsVariableRef(leftRaw);
+                expBisVar  = IsVariableRef(rightRaw);
                 taskHasOperation = true;
             }
             return;
         }
     }
-    public bool MatchesExpectedOperation(int a, int b, string op)
+    public bool MatchesExpectedOperation(int a, int b, string op, bool aFromWorkMem, bool bFromWorkMem)
     {
         if (!taskHasOperation) return true;
         char o = op.Length > 0 ? op[0] : ' ';
         if (o != expOpChar) return false;
 
-        if (o == '+' || o == '*')
-            return (a == expOpA && b == expOpB) || (a == expOpB && b == expOpA);
-        return a == expOpA && b == expOpB;
+        bool Match(int pv, bool pSrc, int ev, bool eIsVar) => pv == ev && pSrc == eIsVar;
+
+        if (o == '+' || o == '*')   // commutatius: prova les dues ordenacions
+        return (Match(a, aFromWorkMem, expOpA, expAisVar) && Match(b, bFromWorkMem, expOpB, expBisVar))
+            || (Match(a, aFromWorkMem, expOpB, expBisVar) && Match(b, bFromWorkMem, expOpA, expAisVar));
+        return Match(a, aFromWorkMem, expOpA, expAisVar) && Match(b, bFromWorkMem, expOpB, expBisVar);    
     }
 
     public bool HasFragment(string id) => _fragments.ContainsKey(id);
@@ -145,6 +154,7 @@ public class GameManager : MonoBehaviour
         if (command == null) { ExecuteNext(); return; }
         string[] parts = command.Split(':');
         CurrentTaskNeedsAlu = false;
+        CurrentTaskNeedsWorkMem = false;
 
         switch (parts[0])
         {
@@ -162,12 +172,14 @@ public class GameManager : MonoBehaviour
             case "WRITE_MEM":
                 string valMem = calculator.Evaluate(parts[2]);
                 CurrentTaskNeedsAlu = HasOperator(parts[2]);
+                CurrentTaskNeedsWorkMem = !CurrentTaskNeedsAlu && IsVariableRef(parts[2]); 
                 SetExpectedOperation(parts[2]); 
                 SetTask(TaskState.WRITE_MEM, parts[1], valMem, $"Assign value {valMem} to {parts[1]}");
                 break;
             case "WRITE_IO":
                 string valIO = calculator.Evaluate(parts[1]);
                 CurrentTaskNeedsAlu = HasOperator(parts[1]);
+                CurrentTaskNeedsWorkMem = !CurrentTaskNeedsAlu && IsVariableRef(parts[1]);
                 SetExpectedOperation(parts[1]);
                 SetTask(TaskState.WRITE_IO, "STDOUT", valIO, $"Print: {valIO}");
                 break;
@@ -193,10 +205,17 @@ public class GameManager : MonoBehaviour
         OnTaskStateChanged?.Invoke(state);
     }
 
-    // L'expressió conté un operador? (llavors el valor s'ha de calcular a la ALU)
+    // L'expressió conté un operador? (el valor s'ha de calcular a la ALU)
     private static bool HasOperator(string expr) =>
         expr.IndexOfAny(new[] { '+', '-', '*', '/', '×', '÷' }) >= 0;
 
+    // L'expressió és una referència a una variable? (el valor s'ha de llegir de la WorkMem)
+    private static bool IsVariableRef(string expr)
+    {
+        string e = expr.Replace("(", "").Replace(")", "").Trim();
+        if (e.Length == 0 || e.StartsWith("\"")) return false;
+        return !int.TryParse(e, out _);
+    }
     // Comprova si l'accio del jugador coincideix amb la tasca pendent i avanca.
     public bool ValidateAction(TaskState action, string destination, string value)
     {

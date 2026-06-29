@@ -45,6 +45,15 @@ public class WorkMemorySlot : MemorySlot
                     AudioManager.Play(l => l.error);
                     return;
                 }
+                
+                if (gm.CurrentTaskNeedsWorkMem && !packet.fromWorkMem)
+                {
+                    value = previousValue;
+                    displayName = previousDisplay;
+                    RefreshLabel();
+                    AudioManager.Play(l => l.error);
+                    return;
+                }
 
                 if (gm.ValidateAction(GameManager.TaskState.WRITE_MEM, this.varName, packet.value))
                 {
@@ -67,6 +76,6 @@ public class WorkMemorySlot : MemorySlot
     private void SpawnValueCube()
     {
         GameObject newCube = Instantiate(cubePrefab, spawnPoint.position + new Vector3(0, -1f, 0), Quaternion.identity);
-        newCube.GetComponent<DataPacket>().SetData(value, false);
+        newCube.GetComponent<DataPacket>().SetData(value, false, false, true);
     }
 }

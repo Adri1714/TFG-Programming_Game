@@ -29,5 +29,6 @@ public class ReverseControlsHazard : TimedPlayerEffectHazard
 
         player.ClearControlsReversal(EffectSource);
         AudioManager.Instance.RemoveEffectLowPass();
+        player.playerControlsReversed = false;
     }
 }

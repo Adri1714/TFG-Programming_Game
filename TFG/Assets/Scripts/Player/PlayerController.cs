@@ -75,11 +75,6 @@ public class PlayerController : MonoBehaviour
             reversedInputSources.Add(sourceId);
             playerControlsReversed = true;
         }
-        else
-        {
-            reversedInputSources.Remove(sourceId);
-            playerControlsReversed = reversedInputSources.Count > 0;
-        }
     }
 
     public void ClearControlsReversal(string sourceId)
